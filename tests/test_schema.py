@@ -1045,7 +1045,38 @@ class PropertyTestCase(unittest.TestCase):
         b1 = B.get(b._id)
         self.assert_(len(b1.slm) == 2)
         self.assert_(b1.slm[0].s == "test")
+    
+    def testSchemaListPropertyInvalidType(self):
+        class A(DocumentSchema):
+            name = StringProperty()
+        
+        class InvalidTypeOne(Document):
+            invalid_string = StringProperty()
+        
+        class InvalidTypeTwo(DocumentSchema):
+            invalid_string = StringProperty()
+        
+        class B(Document):
+            l = SchemaListProperty(A)
+        
+        b = B()
+        self.assertRaises(BadValueError, b.l.append, InvalidTypeOne())
+        self.assertRaises(BadValueError, b.l.append, InvalidTypeTwo())
+        
+        self.assertRaises(BadValueError, b.l.append, InvalidTypeOne)
+        self.assertRaises(BadValueError, b.l.append, InvalidTypeTwo)
 
+    def testSchemaListPropertyInvalidType2(self):
+        class A(DocumentSchema):
+            name = StringProperty()
+                
+        class B(Document):
+            l = SchemaListProperty(A)
+        
+        b = B()
+        types = ('string', 12, DecimalProperty(), float(12), list(), dict(), tuple())
+        for t in types:
+            self.assertRaises(BadValueError, b.l.append, t)
 
     def testSchemaListPropertySlice(self):
         """SchemaListProperty slice methods
