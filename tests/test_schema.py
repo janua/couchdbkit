@@ -673,6 +673,16 @@ class PropertyTestCase(unittest.TestCase):
         self.assertRaises(BadValueError, ftest)
         test.field = 4
         self.assert_(test._doc['field'] == 4)
+    
+    def testDecimalPropertyDefault(self):
+        from decimal import Decimal
+        class Test(Document):
+            d_default = DecimalProperty(default='0')
+            d = DecimalProperty()
+        
+        t = Test()
+        self.assert_(t.d_default == Decimal())
+        self.assert_(t.d == Decimal())
 
     def testDateTimeProperty(self):
         class Test(Document):
