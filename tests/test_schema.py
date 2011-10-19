@@ -1677,7 +1677,8 @@ class PropertyTestCase(unittest.TestCase):
             
         a = A()
         a.x['nothing'] = 'nothing'
-        self.assert_(a.x.pop('nothing') == 'nothing')        
+        self.assert_(a.x.pop('nothing') == 'nothing')
+        self.assertRaises(KeyError, a.x.pop, 'nothing')
         
     def testDynamicListProperty(self):
         from datetime import datetime
